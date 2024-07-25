@@ -35,7 +35,7 @@ print_success() {
 # Check if yay is installed
 if ! command -v yay &> /dev/null; then
     printf "\n%s - yay was NOT located\n" "$YELLOW"
-    read -n1 -rep "${CAT} Would you like to install yay (y,n)? " INST
+    read -rp "${CAT} Would you like to install yay (y,n)? " INST
     if [[ $INST =~ ^[Yy]$ ]]; then
         git clone https://aur.archlinux.org/yay.git
         cd yay
@@ -52,7 +52,7 @@ printf "${YELLOW} System Update to avoid issues\n"
 yay -Syu --noconfirm 2>&1 | tee -a $LOG
 
 # Install packages
-read -n1 -rep "${CAT} Would you like to install the packages? (y/n)? " inst
+read -rp "${CAT} Would you like to install the packages? (y/n)? " inst
 echo
 
 if [[ $inst =~ ^[Yy]$ ]]; then
@@ -86,7 +86,7 @@ else
 fi
 
 # Copy Config Files
-read -n1 -rep "${CAT} Would you like to copy config files? (y,n)? " CFG
+read -rp "${CAT} Would you like to copy config files? (y,n)? " CFG
 if [[ $CFG =~ ^[Yy]$ ]]; then
     printf "Copying config files...\n"
     cp -r dotconfig/dunst ~/.config/ 2>&1 | tee -a $LOG
@@ -113,7 +113,7 @@ sudo cp -R "$HOME/Downloads/nerdfonts/" /usr/share/fonts/
 fc-cache -rv
 
 # Enable SDDM Autologin
-read -n1 -rep 'Would you like to enable SDDM autologin? (y,n)? ' SDDM
+read -rp 'Would you like to enable SDDM autologin? (y,n)? ' SDDM
 if [[ $SDDM =~ ^[Yy]$ ]]; then
     LOC="/etc/sddm.conf"
     echo -e "The following has been added to $LOC.\n"
@@ -124,7 +124,7 @@ if [[ $SDDM =~ ^[Yy]$ ]]; then
 fi
 
 # Install Bluetooth Packages
-read -n1 -rep "${CAT} OPTIONAL - Would you like to install Bluetooth packages? (y,n)? " BLUETOOTH
+read -rp "${CAT} OPTIONAL - Would you like to install Bluetooth packages? (y,n)? " BLUETOOTH
 if [[ $BLUETOOTH =~ ^[Yy]$ ]]; then
     printf "Installing Bluetooth Packages...\n"
     blue_pkgs="bluez bluez-utils blueman"
@@ -142,4 +142,14 @@ fi
 # Script is done
 printf "\n${GREEN} Installation Completed.\n"
 echo -e "${GREEN} You can start Hyprland by typing Hyprland (note the capital H).\n"
-read -
+read -rp "${CAT} Would you like to start Hyprland now? (y,n)? " HYP
+if [[ $HYP =~ ^[Yy]$ ]]; then
+    if command -v Hyprland &> /dev/null; then
+        exec Hyprland
+    else
+        print_error "Hyprland not found. Please make sure Hyprland is installed by checking install.log."
+        exit 1
+    fi
+else
+    exit 0
+fi

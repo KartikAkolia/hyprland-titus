@@ -64,8 +64,16 @@ if [[ $inst =~ ^[Yy]$ ]]; then
     app_pkgs2="polkit-gnome ffmpeg neovim viewnior pavucontrol thunar ffmpegthumbnailer tumbler thunar-archive-plugin xdg-user-dirs"
     theme_pkgs="nordic-theme papirus-icon-theme starship"
 
-    yay -R --noconfirm swaylock waybar
+    # Check and remove swaylock and waybar if installed
+    if yay -Qs swaylock > /dev/null; then
+        yay -R --noconfirm swaylock
+    fi
 
+    if yay -Qs waybar > /dev/null; then
+        yay -R --noconfirm waybar
+    fi
+
+    # Install the packages
     if ! yay -S --noconfirm $git_pkgs $hypr_pkgs $font_pkgs $font_pkgs2 $app_pkgs $app_pkgs2 $theme_pkgs 2>&1 | tee -a $LOG; then
         print_error "Failed to install additional packages - please check the install.log"
         exit 1
@@ -98,7 +106,7 @@ fi
 # Add Fonts for Waybar
 mkdir -p "$HOME/Downloads/nerdfonts/"
 cd "$HOME/Downloads/"
-wget https://github.com/ryanoasis/nerd-fonts/releases/download/v3.2.1/CascadiaCode.zip
+wget https://github.com/ryanoasis/nerd-fonts/releases/download/v2.3.1/CascadiaCode.zip
 unzip '*.zip' -d "$HOME/Downloads/nerdfonts/"
 rm -rf *.zip
 sudo cp -R "$HOME/Downloads/nerdfonts/" /usr/share/fonts/
@@ -134,14 +142,4 @@ fi
 # Script is done
 printf "\n${GREEN} Installation Completed.\n"
 echo -e "${GREEN} You can start Hyprland by typing Hyprland (note the capital H).\n"
-read -n1 -rep "${CAT} Would you like to start Hyprland now? (y,n)? " HYP
-if [[ $HYP =~ ^[Yy]$ ]]; then
-    if command -v Hyprland &> /dev/null; then
-        exec Hyprland
-    else
-        print_error "Hyprland not found. Please make sure Hyprland is installed by checking install.log."
-        exit 1
-    fi
-else
-    exit 0
-fi
+read -

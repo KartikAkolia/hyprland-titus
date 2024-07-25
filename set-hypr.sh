@@ -10,15 +10,16 @@ LOG="install.log"
 # Set the script to exit on error
 set -e
 
+# Welcome message
 printf "$(tput setaf 2) Welcome to the Arch Linux YAY Hyprland installer!\n $(tput sgr0)"
 sleep 2
 
-printf "$YELLOW PLEASE BACKUP YOUR FILES BEFORE PROCEEDING!
-This script will overwrite some of your configs and files!\n"
+# Warning message
+printf "$YELLOW PLEASE BACKUP YOUR FILES BEFORE PROCEEDING! This script will overwrite some of your configs and files!\n"
 sleep 2
 
-printf "\n$YELLOW Some commands require you to enter your password.
-If you are worried about entering your password, you can cancel the script now with CTRL Q or CTRL C and review the contents of this script.\n"
+# Password warning message
+printf "\n$YELLOW Some commands require you to enter your password. If you are worried about entering your password, you can cancel the script now with CTRL Q or CTRL C and review the contents of this script.\n"
 sleep 3
 
 # Function to print error messages
@@ -50,7 +51,7 @@ fi
 printf "${YELLOW} System Update to avoid issues\n"
 yay -Syu --noconfirm 2>&1 | tee -a $LOG
 
-### Install packages ###
+# Install packages
 read -n1 -rep "${CAT} Would you like to install the packages? (y/n)? " inst
 echo
 
@@ -76,7 +77,7 @@ else
     exit 1
 fi
 
-### Copy Config Files ###
+# Copy Config Files
 read -n1 -rep "${CAT} Would you like to copy config files? (y,n)? " CFG
 if [[ $CFG =~ ^[Yy]$ ]]; then
     printf "Copying config files...\n"
@@ -94,16 +95,16 @@ if [[ $CFG =~ ^[Yy]$ ]]; then
     chmod +x ~/.config/waybar/scripts/waybar-wttr.py
 fi
 
-### Add Fonts for Waybar ###
-mkdir -p $HOME/Downloads/nerdfonts/
-cd $HOME/Downloads/
-wget https://github.com/ryanoasis/nerd-fonts/releases/download/v2.3.1/CascadiaCode.zip
-unzip '*.zip' -d $HOME/Downloads/nerdfonts/
+# Add Fonts for Waybar
+mkdir -p "$HOME/Downloads/nerdfonts/"
+cd "$HOME/Downloads/"
+wget https://github.com/ryanoasis/nerd-fonts/releases/download/v3.2.1/CascadiaCode.zip
+unzip '*.zip' -d "$HOME/Downloads/nerdfonts/"
 rm -rf *.zip
-sudo cp -R $HOME/Downloads/nerdfonts/ /usr/share/fonts/
-fc-cache -rv  
+sudo cp -R "$HOME/Downloads/nerdfonts/" /usr/share/fonts/
+fc-cache -rv
 
-### Enable SDDM Autologin ###
+# Enable SDDM Autologin
 read -n1 -rep 'Would you like to enable SDDM autologin? (y,n)? ' SDDM
 if [[ $SDDM =~ ^[Yy]$ ]]; then
     LOC="/etc/sddm.conf"
@@ -114,7 +115,7 @@ if [[ $SDDM =~ ^[Yy]$ ]]; then
     sleep 3
 fi
 
-### Install Bluetooth Packages ###
+# Install Bluetooth Packages
 read -n1 -rep "${CAT} OPTIONAL - Would you like to install Bluetooth packages? (y,n)? " BLUETOOTH
 if [[ $BLUETOOTH =~ ^[Yy]$ ]]; then
     printf "Installing Bluetooth Packages...\n"
@@ -130,7 +131,7 @@ else
     printf "${YELLOW} No Bluetooth packages installed.\n"
 fi
 
-### Script is done ###
+# Script is done
 printf "\n${GREEN} Installation Completed.\n"
 echo -e "${GREEN} You can start Hyprland by typing Hyprland (note the capital H).\n"
 read -n1 -rep "${CAT} Would you like to start Hyprland now? (y,n)? " HYP
